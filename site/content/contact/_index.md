@@ -8,4 +8,4 @@ is valuable for me.
 
 <h3 class="f4 b lh-title mb2">How can I get…?</h3>
 
-You can also use the form below for any inquiries about Commission availability, don't be shy, drop us a line!
+You can also use the form below for any inquiries about Commission availability, don't be shy, drop me a line!
