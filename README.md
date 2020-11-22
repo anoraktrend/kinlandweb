@@ -1,4 +1,4 @@
-lookeehere [![Netlify Status](https://api.netlify.com/api/v1/badges/2a9e71cf-7ffa-4351-b165-84af24af90d6/deploy-status)](https://app.netlify.com/sites/pensive-panini-281be6/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2a9e71cf-7ffa-4351-b165-84af24af90d6/deploy-status)](https://app.netlify.com/sites/pensive-panini-281be6/deploys)
 
 # Hugo template for Netlify CMS with Netlify Identity
 
