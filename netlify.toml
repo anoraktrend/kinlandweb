@@ -1,6 +1,4 @@
 [build.environment]
-  YARN_VERSION = "3.8.6"
-  NPM_VERSION = "10.9.0"
 
 [build]
   command = "yarn build"
