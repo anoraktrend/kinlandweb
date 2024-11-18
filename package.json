@@ -5,7 +5,7 @@
   "repository": "netlify/victor-hugo",
   "main": "index.js",
   "engines": {
-    "node": ">=22"
+    "node": "*"
   }
   "scripts": {
     "lint": "eslint src",
