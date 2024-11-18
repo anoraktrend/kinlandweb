@@ -4,6 +4,9 @@
   "description": "Victor Hugo is a Hugo boilerplate for creating truly epic websites!",
   "repository": "netlify/victor-hugo",
   "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  }
   "scripts": {
     "lint": "eslint src",
     "start": "run-p start:**",
@@ -46,7 +49,6 @@
     "imports-loader": "^0.8.0",
     "mini-css-extract-plugin": "^0.9.0",
     "netlify-cms-app": "^2.9.6",
-    "node": "^22"
     "node-sass": "^7.0.0",
     "npm-run-all": "^4.1.5",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
