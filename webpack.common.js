@@ -12,46 +12,61 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, "dist")
+    path: path.join(__dirname, "dist"),
+    filename: "[name].js",
+    clean: true, // Replaces CleanWebpackPlugin
   },
 
   module: {
     rules: [
       {
-        test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader?name=/[hash].[ext]"
-      },
-      {
-        loader: "babel-loader",
-        test: /\.js?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
-        query: {cacheDirectory: true}
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: true,
+          },
+        },
       },
       {
         test: /\.(sa|sc|c)ss$/,
         exclude: /node_modules/,
-        use: ["style-loader", MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
-      }
-    ]
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
+      },
+      {
+        test: /\.(png|eot|woff|woff2|ttf|svg|gif)$/,
+        type: "asset/resource",
+        generator: {
+          filename: "[hash][ext][query]",
+        },
+      },
+    ],
   },
 
   plugins: [
     new AssetsPlugin({
       filename: "webpack.json",
       path: path.join(process.cwd(), "site/data"),
-      prettyPrint: true
+      prettyPrint: true,
     }),
-    new CopyWebpackPlugin([
-      {
-        from: "./src/fonts/",
-        to: "fonts/",
-        flatten: true
-      }
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "./src/fonts/",
+          to: "fonts/",
+        },
+      ],
+    }),
     new HtmlWebpackPlugin({
-      filename: 'admin/index.html',
-      template: 'src/cms.html',
+      filename: "admin/index.html",
+      template: "src/cms.html",
       inject: false,
     }),
-  ]
+  ],
 };
