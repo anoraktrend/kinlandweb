@@ -1,8 +1,12 @@
 node_modules/
 dist/
 site/data/webpack.json
-/npm-debug.log
+/npm-debug.log*
 yarn-error.log
+*.log
+.env
+.env.*
+.DS_Store
 
 .gemini/
 gha-creds-*.json
