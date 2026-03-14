@@ -9,3 +9,6 @@
 
 [context.deploy-preview]
   command = "yarn build:preview"
+
+[functions]
+  directory = "netlify/functions"
