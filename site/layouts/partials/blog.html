@@ -11,9 +11,11 @@
 			{{ end }}
 		</div>
 
+		{{ if gt (len (where .Site.RegularPages "Type" "post")) 4 }}
 		<div class="tc">
 			<a href="/post" class="btn raise">Read more</a>
 		</div>
+		{{ end }}
 
 	</div>
 </div>
