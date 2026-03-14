@@ -41,6 +41,8 @@ jobs:
   xanitizer-security-analysis:
     # Xanitizer runs on ubuntu-latest and windows-latest.
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       # Check out the repository
