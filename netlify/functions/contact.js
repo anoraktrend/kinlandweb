@@ -1,6 +1,3 @@
-const formData = require("form-data");
-const Mailgun = require("mailgun.js");
-
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
@@ -19,32 +16,21 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Missing required fields" };
   }
 
-  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.CONTACT_EMAIL) {
-    console.error("Missing Mailgun configuration");
+  if (!process.env.NETLIFY_EMAILS_PROVIDER || !process.env.NETLIFY_EMAILS_PROVIDER_API_KEY || !process.env.NETLIFY_EMAILS_SECRET || !process.env.CONTACT_EMAIL) {
+    console.error("Missing Netlify Email Integration configuration");
     return { statusCode: 500, body: "Internal Server Error: Missing Configuration" };
   }
 
-  const mailgun = new Mailgun(formData);
-  const mg = mailgun.client({
-    username: "api",
-    key: process.env.MAILGUN_API_KEY,
-  });
-
-  const domain = process.env.MAILGUN_DOMAIN;
-  const contactEmail = process.env.CONTACT_EMAIL;
-
   try {
-    await mg.messages.create(domain, {
-      from: `${name} <${email}>`,
-      to: [contactEmail],
-      subject: `New Contact Form Submission from ${name}`,
-      text: message,
-      html: `
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
+    await fetch(`${process.env.URL}/.netlify/functions/emails/contact`, {
+      headers: { "netlify-emails-secret": process.env.NETLIFY_EMAILS_SECRET },
+      method: "POST",
+      body: JSON.stringify({
+        from: email,
+        to: process.env.CONTACT_EMAIL,
+        subject: `New Contact Form Submission from ${name}`,
+        parameters: { name, email, message },
+      }),
     });
 
     return {
@@ -52,7 +38,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ message: "Email sent successfully" }),
     };
   } catch (error) {
-    console.error("Mailgun error:", error);
+    console.error("Email sending error:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to send email" }),

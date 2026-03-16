@@ -30,6 +30,7 @@
     "@babel/preset-react": "^7.28.5",
     "@babel/register": "^7.28.6",
     "@eslint/js": "10.0.1",
+    "@netlify/plugin-emails": "^1.1.1",
     "assets-webpack-plugin": "^7.1.1",
     "babel-loader": "^10.1.1",
     "clean-webpack-plugin": "^4.0.0",

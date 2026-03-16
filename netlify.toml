@@ -1,7 +1,15 @@
+[[plugins]]
+  package = "@netlify/plugin-emails"
+
 [build.environment]
   YARN_VERSION = "1.22.22"
   NPM_VERSION = "10.9.0"
   NODE_VERSION = "22"
+  # Set these in your Netlify dashboard
+  # NETLIFY_EMAILS_PROVIDER = "mailgun"
+  # NETLIFY_EMAILS_PROVIDER_API_KEY = "YOUR_MAILGUN_API_KEY"
+  # NETLIFY_EMAILS_SECRET = "YOUR_UNIQUE_SECRET"
+  # CONTACT_EMAIL = "your-email@example.com"
 
 [build]
   command = "yarn build"
