@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "@netlify/neon": "^0.1.2",
     "decap-cms-app": "^3.10.1",
     "drizzle-orm": "^0.45.1"
   },

@@ -10,3 +10,6 @@ yarn-error.log
 
 .gemini/
 gha-creds-*.json
+
+# Local Netlify folder
+.netlify
