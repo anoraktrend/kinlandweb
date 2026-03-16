@@ -1,0 +1,88 @@
+<div class="mt4">
+  <h3 class="f3 b lh-title mb3">Comments</h3>
+
+  <!-- Comment Form -->
+  <form id="comment-form" class="mb4">
+    <fieldset>
+      <input type="text" id="comment-name" placeholder="Your Name" class="w-100 mb2" required>
+    </fieldset>
+    <fieldset>
+      <textarea id="comment-message" placeholder="Leave a comment..." rows="4" class="w-100 mb2" required></textarea>
+    </fieldset>
+    <button type="submit" id="comment-submit-button" class="btn raise">Submit</button>
+    <div id="comment-form-status" class="mt2"></div>
+  </form>
+
+  <!-- Comments List -->
+  <div id="comments-list">
+    <p>Loading comments...</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const commentForm = document.getElementById("comment-form");
+    const commentStatus = document.getElementById("comment-form-status");
+    const commentButton = document.getElementById("comment-submit-button");
+    const commentsList = document.getElementById("comments-list");
+
+    const fetchComments = async () => {
+      try {
+        const response = await fetch("/.netlify/functions/guestbook");
+        if (!response.ok) {
+          commentsList.innerHTML = "<p>Could not load comments.</p>";
+          return;
+        }
+        const comments = await response.json();
+        if (comments.length === 0) {
+          commentsList.innerHTML = "<p>No comments yet. Be the first!</p>";
+        } else {
+          commentsList.innerHTML = comments.map(comment => `
+            <div class="mb3 pb2 bb b--moon-gray">
+              <p class="b ma0">${comment.name} <span class="fw4 gray f6">on ${new Date(comment.created_at).toLocaleDateString()}</span></p>
+              <p class="ma0">${comment.message}</p>
+            </div>
+          `).join("");
+        }
+      } catch (error) {
+        commentsList.innerHTML = "<p>Error loading comments.</p>";
+      }
+    };
+
+    commentForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      commentButton.disabled = true;
+      commentButton.textContent = "Submitting...";
+      commentStatus.textContent = "";
+
+      const name = document.getElementById("comment-name").value;
+      const message = document.getElementById("comment-message").value;
+
+      try {
+        const response = await fetch("/.netlify/functions/guestbook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, message }),
+        });
+
+        if (response.status === 201) {
+          commentStatus.textContent = "Thanks for your comment!";
+          commentStatus.className = "mt2 green";
+          commentForm.reset();
+          fetchComments(); // Refresh comments list
+        } else {
+          commentStatus.textContent = "Oops! Something went wrong.";
+          commentStatus.className = "mt2 red";
+        }
+      } catch (error) {
+        commentStatus.textContent = "Oops! Connection error.";
+        commentStatus.className = "mt2 red";
+      } finally {
+        commentButton.disabled = false;
+        commentButton.textContent = "Submit";
+      }
+    });
+
+    fetchComments();
+  });
+</script>
