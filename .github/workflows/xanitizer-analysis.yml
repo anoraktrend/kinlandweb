@@ -55,6 +55,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 11
+          distribution: 'temurin'
 
       # Compile the code for Java projects and get all libraries, e.g. via Maven
       # Please adapt, if your project uses another build system to compile Java source code.
