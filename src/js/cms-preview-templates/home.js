@@ -1,7 +1,7 @@
 import React from "react";
 // import format from "date-fns/format";
 
-// import Jumbotron from "./components/jumbotron";
+import Jumbotron from "./components/jumbotron.js";
 
 export default class PostPreview extends React.Component {
   render() {

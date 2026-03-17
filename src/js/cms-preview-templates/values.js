@@ -1,5 +1,5 @@
 import React from "react";
-import Jumbotron from "./components/jumbotron";
+import Jumbotron from "./components/jumbotron.js";
 
 const MediaBlock = ({heading, text, imageUrl, reverse}) => {
   const imageContainerClassName = reverse
