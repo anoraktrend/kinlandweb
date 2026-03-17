@@ -1,50 +1,47 @@
-export default async function handler(request, context) {
-  if (request.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   let data;
   try {
-    data = await request.json();
+    data = JSON.parse(event.body);
   } catch (e) {
-    return new Response("Invalid JSON", { status: 400 });
+    return { statusCode: 400, body: "Invalid JSON" };
   }
 
   const { name, email, message } = data;
 
   if (!name || !email || !message) {
-    return new Response("Missing required fields", { status: 400 });
+    return { statusCode: 400, body: "Missing required fields" };
   }
 
-  if (!context.env.NETLIFY_EMAILS_PROVIDER || !context.env.NETLIFY_EMAILS_PROVIDER_API_KEY || !context.env.NETLIFY_EMAILS_SECRET || !context.env.CONTACT_EMAIL) {
+  if (!process.env.NETLIFY_EMAILS_PROVIDER || !process.env.NETLIFY_EMAILS_PROVIDER_API_KEY || !process.env.NETLIFY_EMAILS_SECRET || !process.env.CONTACT_EMAIL) {
     console.error("Missing Netlify Email Integration configuration");
-    return new Response(JSON.stringify({ error: "Email service not configured" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return { statusCode: 500, body: "Internal Server Error: Missing Configuration" };
   }
 
   try {
-    await fetch(`${context.env.URL}/.netlify/functions/emails/contact`, {
-      headers: { "netlify-emails-secret": context.env.NETLIFY_EMAILS_SECRET },
+    await fetch(`${process.env.URL}/.netlify/functions/emails/contact`, {
+      headers: { "netlify-emails-secret": process.env.NETLIFY_EMAILS_SECRET },
       method: "POST",
       body: JSON.stringify({
         from: email,
-        to: context.env.CONTACT_EMAIL,
+        to: process.env.CONTACT_EMAIL,
         subject: `New Contact Form Submission from ${name}`,
         parameters: { name, email, message },
       }),
     });
 
-    return new Response(JSON.stringify({ message: "Email sent successfully" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Email sent successfully" }),
+    };
   } catch (error) {
     console.error("Email sending error:", error);
-    return new Response(JSON.stringify({ error: "Failed to send email" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Failed to send email" }),
+    };
   }
-}
+};

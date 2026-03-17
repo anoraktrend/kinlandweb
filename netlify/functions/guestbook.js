@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+const { neon } = require("@neondatabase/serverless");
 
 const createTableQuery = `
 CREATE TABLE IF NOT EXISTS guestbook (
@@ -9,56 +9,46 @@ CREATE TABLE IF NOT EXISTS guestbook (
 );
 `;
 
-export default async function handler(request, context) {
-  if (!context.env.NEON_DATABASE_URL) {
-    return new Response(JSON.stringify({ error: "Database connection not configured" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const sql = neon(context.env.NEON_DATABASE_URL);
+exports.handler = async (event) => {
+  const sql = neon(process.env.NEON_DATABASE_URL);
 
   // Ensure the table exists
   await sql(createTableQuery);
 
-  if (request.method === "GET") {
+  if (event.httpMethod === "GET") {
     try {
       const entries = await sql`SELECT name, message, created_at FROM guestbook ORDER BY created_at DESC LIMIT 100`;
-      return new Response(JSON.stringify(entries), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return {
+        statusCode: 200,
+        body: JSON.stringify(entries),
+      };
     } catch (error) {
       console.error("Error fetching entries:", error);
-      return new Response(JSON.stringify({ error: "Failed to fetch entries" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return { statusCode: 500, body: JSON.stringify({ error: "Failed to fetch entries" }) };
     }
   }
 
-  if (request.method === "POST") {
+  if (event.httpMethod === "POST") {
     try {
-      const { name, message } = await request.json();
+      const { name, message } = JSON.parse(event.body);
       if (!name || !message) {
-        return new Response("Name and message are required.", { status: 400 });
+        return { statusCode: 400, body: "Name and message are required." };
       }
 
       await sql`INSERT INTO guestbook (name, message) VALUES (${name}, ${message})`;
 
-      return new Response(JSON.stringify({ message: "Entry added successfully." }), {
-        status: 201,
-        headers: { "Content-Type": "application/json" },
-      });
+      return {
+        statusCode: 201,
+        body: JSON.stringify({ message: "Entry added successfully." }),
+      };
     } catch (error) {
       console.error("Error adding entry:", error);
-      return new Response(JSON.stringify({ error: "Failed to add entry" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return { statusCode: 500, body: JSON.stringify({ error: "Failed to add entry" }) };
     }
   }
 
-  return new Response("Method Not Allowed", { status: 405 });
-}
+  return {
+    statusCode: 405,
+    body: "Method Not Allowed",
+  };
+};
