@@ -20,3 +20,14 @@
 
 [functions]
   directory = "netlify/functions"
+
+[[edge_functions]]
+  path = "/contact"
+  function = "contact"
+
+[[edge_functions]]
+  path = "/guestbook"
+  function = "guestbook"
+
+[dev]
+  command = "hugo server -w"
