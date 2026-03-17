@@ -95,5 +95,6 @@
   "resolutions": {
     "trim": "^0.0.3",
     "minimatch": "^10.2.4"
-  }
+  },
+  "packageManager": "yarn@4.13.0"
 }
