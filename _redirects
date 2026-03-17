@@ -1,0 +1,5 @@
+# Redirect admin to Decap CMS
+/admin/* /admin/index.html 200
+
+# Handle client-side routing for SPA
+/* /index.html 200

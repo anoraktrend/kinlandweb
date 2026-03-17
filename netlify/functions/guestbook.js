@@ -1,4 +1,4 @@
-const { neon } = require("@neondatabase/serverless");
+const {neon} = require("@neondatabase/serverless");
 
 const createTableQuery = `
 CREATE TABLE IF NOT EXISTS guestbook (
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS guestbook (
 );
 `;
 
-exports.handler = async (event) => {
+exports.handler = async(event) => {
   const sql = neon(process.env.NEON_DATABASE_URL);
 
   // Ensure the table exists
@@ -24,26 +24,26 @@ exports.handler = async (event) => {
       };
     } catch (error) {
       console.error("Error fetching entries:", error);
-      return { statusCode: 500, body: JSON.stringify({ error: "Failed to fetch entries" }) };
+      return {statusCode: 500, body: JSON.stringify({error: "Failed to fetch entries"})};
     }
   }
 
   if (event.httpMethod === "POST") {
     try {
-      const { name, message } = JSON.parse(event.body);
+      const {name, message} = JSON.parse(event.body);
       if (!name || !message) {
-        return { statusCode: 400, body: "Name and message are required." };
+        return {statusCode: 400, body: "Name and message are required."};
       }
 
       await sql`INSERT INTO guestbook (name, message) VALUES (${name}, ${message})`;
 
       return {
         statusCode: 201,
-        body: JSON.stringify({ message: "Entry added successfully." }),
+        body: JSON.stringify({message: "Entry added successfully."}),
       };
     } catch (error) {
       console.error("Error adding entry:", error);
-      return { statusCode: 500, body: JSON.stringify({ error: "Failed to add entry" }) };
+      return {statusCode: 500, body: JSON.stringify({error: "Failed to add entry"})};
     }
   }
 

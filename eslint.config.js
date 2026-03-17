@@ -1,9 +1,8 @@
-const js = require("@eslint/js");
-const globals = require("globals");
-const babelParser = require("@babel/eslint-parser");
-const importPlugin = require("eslint-plugin-import");
+import js from "@eslint/js";
+import globals from "globals";
+import importPlugin from "eslint-plugin-import";
 
-module.exports = [
+export default [
   js.configs.recommended,
   {
     languageOptions: {
@@ -12,13 +11,8 @@ module.exports = [
         ...globals.node,
         ENV: "readonly",
       },
-      parser: babelParser,
-      parserOptions: {
-        requireConfigFile: false,
-        babelOptions: {
-          presets: ["@babel/preset-react"],
-        },
-      },
+      ecmaVersion: 2022,
+      sourceType: "module",
     },
     plugins: {
       import: importPlugin,
@@ -45,12 +39,12 @@ module.exports = [
       "comma-spacing": 2,
       "eol-last": 2,
       "eqeqeq": ["error", "smart"],
-      "indent": [2, 2, { SwitchCase: 1 }],
+      "indent": [2, 2, {SwitchCase: 1}],
       "keyword-spacing": 2,
       "max-len": [1, 160, 2],
       "new-parens": 2,
       "no-mixed-spaces-and-tabs": 2,
-      "no-multiple-empty-lines": [2, { max: 2 }],
+      "no-multiple-empty-lines": [2, {max: 2}],
       "no-trailing-spaces": 2,
       "object-curly-spacing": [2, "never"],
       "quotes": [2, "double", "avoid-escape"],
@@ -61,15 +55,15 @@ module.exports = [
       "space-infix-ops": 2,
       "space-unary-ops": 2,
       "arrow-parens": [2, "always"],
-      "arrow-spacing": [2, { before: true, after: true }],
+      "arrow-spacing": [2, {before: true, after: true}],
       "no-confusing-arrow": 2,
       "prefer-const": 2,
       "jsx-quotes": [2, "prefer-double"],
-      "import/no-unresolved": [1, { commonjs: true, amd: true }],
+      "import/no-unresolved": [1, {commonjs: true, amd: true}],
       "import/export": 2,
       "strict": [2, "global"],
       "no-undef": 2,
-      "no-unused-vars": [2, { args: "none" }],
+      "no-unused-vars": [2, {args: "none"}],
     },
   },
 ];

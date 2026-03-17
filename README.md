@@ -1,48 +1,177 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/2a9e71cf-7ffa-4351-b165-84af24af90d6/deploy-status)](https://app.netlify.com/sites/pensive-panini-281be6/deploys)
+# Kinland Website - Cloudflare Pages Deployment
 
-# Hugo template for Netlify CMS with Netlify Identity
+This is the Kinland website configured for deployment on Cloudflare Pages. The site serves static content, handles API requests, and provides a Decap CMS admin interface.
 
-This is a small business template built with [Victor Hugo](https://github.com/netlify/victor-hugo) and [Netlify CMS](https://github.com/netlify/netlify-cms), designed and developed by [Darin Dimitroff](http://www.darindimitroff.com/), [spacefarm.digital](https://www.spacefarm.digital).
+## Features
 
-## Getting started
+- **Static Site Serving**: Serves Hugo-generated static content
+- **API Endpoints**: Guestbook and contact form APIs
+- **Decap CMS**: Content management interface
+- **Asset Optimization**: Automatic asset serving with proper caching
+- **Security Headers**: Proper security headers for production
 
-Use our deploy button to get your own copy of the repository. 
+## Architecture
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/one-click-hugo-cms&stack=cms)
+The site is built using:
+- **Hugo**: Static site generation
+- **React**: Frontend components
+- **Cloudflare Pages**: Static hosting with edge functions
+- **Decap CMS**: Content management
 
-This will setup everything needed for running the CMS:
+## Development
 
-* A new repository in your GitHub account with the code
-* Full Continuous Deployment to Netlify's global CDN network
-* Control users and access with Netlify Identity
-* Manage content with Netlify CMS
+### Prerequisites
 
-Once the initial build finishes, you can invite yourself as a user. Go to the Identity tab in your new site, click "Invite" and send yourself an invite.
+- Node.js 18+
+- Hugo
+- Wrangler CLI
 
-Now you're all set, and you can start editing content!
+### Installation
 
-## Local Development
+```bash
+npm install
+```
 
-Clone this repository, and run `yarn` or `npm install` from the new folder to install all required dependencies.
+### Development
 
-Then start the development server with `yarn start` or `npm start`.
+```bash
+# Start Hugo development server
+npm run start:hugo
 
-## Layouts
+# Start webpack development server
+npm run start:webpack
 
-The template is based on small, content-agnostic partials that can be mixed and matched. The pre-built pages showcase just a few of the possible combinations. Refer to the `site/layouts/partials` folder for all available partials.
+# Start Cloudflare Worker development
+npm run start:worker
+```
 
-Use Hugo’s `dict` functionality to feed content into partials and avoid repeating yourself and creating discrepancies.
+### Building
 
-## CSS
+```bash
+# Build static site and worker
+npm run build:all
 
-The template uses a custom fork of Tachyons and PostCSS with cssnext and cssnano. To customize the template for your brand, refer to `src/css/imports/_variables.css` where most of the important global variables like colors and spacing are stored.
+# Build only the worker
+npm run build:worker
+```
 
-## SVG
+### Deployment
 
-All SVG icons stored in `site/static/img/icons` are automatically optimized with SVGO (gulp-svgmin) and concatenated into a single SVG sprite stored as a a partial called `svg.html`. Make sure you use consistent icons in terms of viewport and art direction for optimal results. Refer to an SVG via the `<use>` tag like so:
+```bash
+# Deploy to Cloudflare Pages
+npm run deploy:pages
+```
+
+## Configuration
+
+### Environment Variables
+
+Set these in your Cloudflare Pages dashboard:
+
+```env
+NODE_VERSION=22
+NPM_VERSION=10.9.0
+YARN_VERSION=1.22.22
+HUGO_VERSION=0.156.2
+HUGO_ENV=production
+HUGO_ENABLEGITINFO=true
+```
+
+### Build Settings
+
+- **Build command**: `npm run build:all`
+- **Publish directory**: `dist`
+- **Framework preset**: None (Custom)
+
+## API Endpoints
+
+### Guestbook
+
+- `GET /api/guestbook` - Get all guestbook entries
+- `POST /api/guestbook` - Add new guestbook entry
+
+### Contact
+
+- `POST /api/contact` - Submit contact form
+
+## Admin Interface
+
+Access the Decap CMS admin interface at:
 
 ```
-<svg width="16px" height="16px" class="db">
-  <use xlink:href="#SVG-ID"></use>
-</svg>
+https://your-site.pages.dev/admin/
 ```
+
+## File Structure
+
+```
+├── src/
+│   ├── worker.js          # Main worker entry point
+│   ├── index.js           # React app entry
+│   ├── css/               # Styles
+│   └── js/                # JavaScript modules
+├── site/                  # Hugo source
+├── dist/                  # Built assets
+├── cloudflare.toml        # Cloudflare Pages config
+├── _redirects             # URL routing rules
+├── _headers               # HTTP headers
+├── wrangler.toml          # Cloudflare Workers config
+├── cloudflare.config.js   # Vite config for worker
+└── package.json
+```
+
+## Migration from Netlify
+
+This version converts the original Netlify-based site to Cloudflare Pages:
+
+- Static assets are served from the `dist` directory
+- API endpoints use Cloudflare Workers
+- Admin interface is preserved
+- Build process updated for Pages
+- Environment variables moved to Cloudflare dashboard
+
+## Cloudflare Pages Configuration
+
+### Build Configuration
+
+The `cloudflare.toml` file contains the build configuration:
+
+```toml
+[build]
+  command = "npm run build:all"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_VERSION = "10.9.0"
+  YARN_VERSION = "1.22.22"
+```
+
+### URL Routing
+
+The `_redirects` file handles client-side routing:
+
+```
+# Redirect admin to Decap CMS
+/admin/* /admin/index.html 200
+
+# Handle client-side routing for SPA
+/* /index.html 200
+```
+
+### Security Headers
+
+The `_headers` file sets security headers:
+
+```
+# Security headers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-XSS-Protection: 1; mode=block
+```
+
+## Support
+
+For issues related to the Cloudflare Pages setup, check the [Cloudflare Pages documentation](https://developers.cloudflare.com/pages/).
