@@ -50,7 +50,6 @@
     "css-loader": "^7.1.4",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "date-fns": "^4.1.0",
-    "drizzle-kit": "^0.18.1",
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.32.0",
     "exports-loader": "^5.0.0",
@@ -80,14 +79,13 @@
     "webpack-cli": "^7.0.1",
     "webpack-dev-server": "^5.2.3",
     "webpack-merge": "^6.0.1",
-    "wrangler": "^4.74.0"
+    "wrangler": "^4.35.0"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@netlify/neon": "^0.1.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
-    "decap-cms-app": "^3.10.1",
     "drizzle-orm": "^0.45.1",
     "postcss": "^8.5.8",
     "redux": "^5.0.1",
