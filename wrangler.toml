@@ -1,0 +1,50 @@
+# Cloudflare Workers configuration for Kinland website
+
+name = "kinland-web"
+main = "dist/worker.js"
+compatibility_date = "2025-01-01"
+
+# Environment variables
+[vars]
+SITE_URL = "https://kinland.com"
+ADMIN_EMAIL = "admin@kinland.com"
+
+# KV namespaces for data storage
+[[kv_namespaces]]
+binding = "ASSETS"
+id = "fb02107173c64c75bba87491bb8e59fd"
+
+[[kv_namespaces]]
+binding = "GUESTBOOK"
+id = "04faf3145a574cb19a06fa642ddefd1f"
+
+[[kv_namespaces]]
+binding = "CONTACT"
+id = "70db53ee557e4ff3bdc7441eeebad596"
+
+# D1 database (if using)
+[[d1_databases]]
+binding = "DB"
+database_name = "kinland-db"
+database_id = "a5bc26ea-5977-4ab8-8cfe-69386d10a251"
+
+# Routes for the worker
+routes = [
+  { pattern = "kinland.com/*", zone_id = "your-zone-id" },
+  { pattern = "www.kinland.com/*", zone_id = "your-zone-id" }
+]
+
+# Build configuration
+[build]
+command = "npm run build:worker"
+watch_dir = "src"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
