@@ -11,9 +11,8 @@ SITE_URL = "https://kinland.helltop.net"
 ADMIN_EMAIL = "admin@kinland.helltop.net"
 CONTACT_EMAIL = "contact@kinland.helltop.net"
 GUESTBOOK_ENABLED = "true"
-ENABLE_EMAILS = "false"  # Set to true when using Cloudflare Email Sending
-MAILGUN_API_KEY = "your-mailgun-api-key"
-MAILGUN_DOMAIN = "your-mailgun-domain"
+ENABLE_EMAILS = "true"  # Set to true when using Cloudflare Email Sending
+MAILGUN_DOMAIN = "mail.helltop.net"
 MAILGUN_API_BASE_URL = "https://api.mailgun.net/v3"
 
 # KV namespaces for data storage
