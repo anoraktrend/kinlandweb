@@ -6,6 +6,7 @@
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import {viteStaticCopy} from "vite-plugin-static-copy";
+import {resolve} from "path";
 
 export default defineConfig({
   // Cloudflare Workers target
@@ -23,12 +24,15 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: [],
+      external: ['__STATIC_CONTENT_MANIFEST'],
       output: {
         // Ensure all dependencies are bundled for Workers
         globals: {},
         // Don't use dynamic imports in Workers
-        inlineDynamicImports: true
+        inlineDynamicImports: true,
+        // Cloudflare Workers specific output options
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name].js"
       }
     }
   },
@@ -36,26 +40,15 @@ export default defineConfig({
   // Plugins
   plugins: [
     react(),
-
-    // Copy static assets
     viteStaticCopy({
       targets: [
         {
-          src: "site/static/**/*",
-          dest: "./"
-        },
-        {
-          src: "site/content/**/*",
-          dest: "./content"
-        },
-        {
-          src: "site/data/**/*",
-          dest: "./data"
+          src: 'dist-hugo/*',
+          dest: './'
         }
       ]
     })
   ],
-
   // Optimize for Workers
   optimizeDeps: {
     include: [
@@ -63,5 +56,14 @@ export default defineConfig({
       "react-dom",
       "date-fns"
     ]
+  },
+
+  // Resolve aliases for easier imports
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"),
+      "@site": resolve(__dirname, "site"),
+      "@public": resolve(__dirname, "public")
+    }
   }
 });

@@ -1,3 +1,6 @@
+# Cloudflare Pages configuration for Hugo site
+name = "kinland-web"
+
 [build]
   command = "npm run build:all"
   publish = "dist"
@@ -6,10 +9,24 @@
   NODE_VERSION = "22"
   NPM_VERSION = "10.9.0"
   YARN_VERSION = "1.22.22"
+  HUGO_VERSION = "0.156.2"
+  HUGO_ENV = "production"
+  HUGO_ENABLEGITINFO = "true"
 
+# Production environment variables
 [env.production]
   [env.production.vars]
     NODE_ENV = "production"
-    HUGO_VERSION = "0.156.2"
     HUGO_ENV = "production"
     HUGO_ENABLEGITINFO = "true"
+    HUGO_BASEURL = "https://kinland.com"
+    HUGO_CACHEDIR = "/tmp/hugo_cache"
+
+# Preview environment variables
+[env.preview]
+  [env.preview.vars]
+    NODE_ENV = "development"
+    HUGO_ENV = "preview"
+    HUGO_ENABLEGITINFO = "true"
+    HUGO_BASEURL = "https://preview.kinland.com"
+    HUGO_CACHEDIR = "/tmp/hugo_cache"

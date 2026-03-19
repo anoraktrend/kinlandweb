@@ -1,25 +1,63 @@
-# Security headers
+# Cloudflare Pages security headers for Hugo site
+
+# Global security headers
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
   X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.cloudflare.com *.netlify.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: *.cloudflare.com *.netlify.com; font-src 'self' *.cloudflare.com *.netlify.com; connect-src 'self' *.cloudflare.com *.netlify.com; frame-src 'self' *.cloudflare.com *.netlify.com;
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-# Cache static assets
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
+# HTML files
+/*.html
+  Cache-Control: public, max-age=3600
 
-# Cache images
-/img/*
-  Cache-Control: public, max-age=31536000, immutable
-
-# Cache CSS and JS
+# Static assets (CSS, JS, images)
 /*.css
   Cache-Control: public, max-age=31536000, immutable
 
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 
-# Admin interface
-/admin/*
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.gif
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+# RSS feeds
+/*.xml
+  Cache-Control: public, max-age=3600
+
+# JSON files
+/*.json
+  Cache-Control: public, max-age=3600
+
+# API endpoints (if any)
+/api/*
   Cache-Control: no-cache, no-store, must-revalidate
+  Access-Control-Allow-Origin: https://kinland.com
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization

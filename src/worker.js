@@ -1,90 +1,151 @@
+import manifestJSON from '__STATIC_CONTENT_MANIFEST';
+
+// Parse manifest once
+let assetManifest = null;
+try {
+  assetManifest = typeof manifestJSON === 'string' ? JSON.parse(manifestJSON) : manifestJSON;
+} catch (e) {
+  console.error("Failed to parse manifest:", e);
+  assetManifest = {};
+}
+
 /**
  * Cloudflare Worker for Kinland website
  * Serves static assets and handles routing for the Hugo-generated site
  */
-
-// Static assets mapping
-const ASSETS = {
-  // Add mappings for your static assets
-  "/": "/index.html",
-  "/admin/": "/admin/index.html",
-  "/favicon.ico": "/favicon.ico",
-  "/robots.txt": "/robots.txt"
-};
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Handle static assets
-    if (path.startsWith("/assets/") || path.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/)) {
-      return handleAsset(request, path, env);
-    }
+    // DEBUG: Log environment keys and manifest status
+    console.log("Request path:", path);
+    console.log("Env keys:", Object.keys(env));
+    console.log("Manifest type:", typeof manifestJSON);
+    console.log("Manifest parsed:", assetManifest ? Object.keys(assetManifest).length : "null");
 
-    // Handle admin interface
-    if (path.startsWith("/admin/")) {
-      return handleAdmin(request, path, env);
-    }
-
-    // Handle API routes
+    // Handle API routes first
     if (path.startsWith("/api/")) {
       return handleAPI(request, path, env);
     }
 
-    // Handle content routes
-    if (path === "/" || path.startsWith("/post/") || path.startsWith("/categories/") || path.startsWith("/tags/")) {
-      return handleContent(request, path, env);
+    // Handle admin interface (Decap CMS)
+    if (path.startsWith("/admin/")) {
+      return handleAdmin(request, path, env);
     }
 
-    // Default to index.html for SPA routing
-    return handleAsset(request, "/index.html", env);
+    // Handle all other requests (static assets and Hugo content)
+    return handleStaticRequest(request, path, env);
   }
 };
 
 /**
- * Handle static asset requests
+ * Handle static asset and content requests
  */
-async function handleAsset(request, path, env) {
-  // Try to serve from KV storage first
-  if (env && env.ASSETS) {
-    const asset = await env.ASSETS.get(path);
+async function handleStaticRequest(request, path, env) {
+  // 1. Try the exact path (e.g. /css/main.css, /img/logo.png, /post/my-post/index.html)
+  let response = await serveAsset(path, env);
+  if (response) return response;
+
+  // 2. Try path + index.html (for clean URLs like /post/my-post/ -> /post/my-post/index.html)
+  const indexPath = path.endsWith("/") ? path + "index.html" : path + "/index.html";
+  response = await serveAsset(indexPath, env);
+  if (response) return response;
+
+  // 3. Try path + .html (for clean URLs like /about -> /about.html)
+  if (!path.includes(".") && !path.endsWith("/")) {
+    response = await serveAsset(path + ".html", env);
+    if (response) return response;
+  }
+
+  // 4. Fallback to 404.html
+  response = await serveAsset("/404.html", env);
+  if (response) {
+    return new Response(response.body, {
+      status: 404,
+      headers: response.headers
+    });
+  }
+
+  // 5. Ultimate fallback
+  return new Response("Not Found", { status: 404 });
+}
+
+/**
+ * Serve an asset from available KV bindings
+ */
+async function serveAsset(path, env) {
+  // Normalize path: remove leading slash for KV lookups
+  let normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  
+  // KV keys cannot be empty; if root is requested, this function returns null
+  // and the caller handles the fallback to index.html
+  if (!normalizedPath) return null;
+
+  // Map requested path to hashed key using the manifest
+  let storageKey = assetManifest[normalizedPath] || normalizedPath;
+
+  // Primary: Use __STATIC_CONTENT (standard Wrangler [site] binding)
+  if (env.__STATIC_CONTENT) {
+    const asset = await env.__STATIC_CONTENT.get(storageKey, { type: "arrayBuffer" });
     if (asset) {
-      const headers = new Headers();
-      const ext = path.split(".").pop();
-
-      // Set appropriate content type
-      const contentType = getContentType(ext);
-      if (contentType) {
-        headers.set("Content-Type", contentType);
-      }
-
-      // Set cache headers
-      headers.set("Cache-Control", "public, max-age=31536000");
-
-      return new Response(asset, {headers});
+      return createAssetResponse(path, asset);
     }
   }
 
-  // Fallback to serving from the worker bundle
-  return new Response("Asset not found", {status: 404});
+  // Secondary: Use ASSETS KV (manual binding)
+  if (env.ASSETS) {
+    const asset = await env.ASSETS.get(path, { type: "arrayBuffer" });
+    if (asset) {
+      return createAssetResponse(path, asset);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Create a Response object for an asset with proper headers
+ */
+function createAssetResponse(path, content) {
+  const ext = path.split(".").pop().toLowerCase();
+  const headers = new Headers();
+  
+  const contentType = getContentType(ext);
+  if (contentType) {
+    headers.set("Content-Type", contentType);
+  }
+
+  // Set Cache-Control headers
+  // s-maxage=31536000 tells Cloudflare to cache this at the edge for a year
+  if (path.startsWith("/assets/") || path.startsWith("/img/") || 
+      path.match(/\.[a-f0-9]{5,}\./)) { // Matches common hash patterns
+    headers.set("Cache-Control", "public, max-age=31536000, s-maxage=31536000, immutable");
+  } else {
+    // HTML and other files get shorter caching
+    headers.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
+  }
+
+  // Security headers (from _headers file)
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  return new Response(content, { headers });
 }
 
 /**
  * Handle admin interface (Decap CMS)
  */
 async function handleAdmin(request, path, env) {
-  // Serve the admin interface
   const adminPath = path === "/admin/" ? "/admin/index.html" : path;
-
-  if (env && env.ASSETS) {
-    const adminFile = await env.ASSETS.get(adminPath);
-    if (adminFile) {
-      const headers = new Headers();
-      headers.set("Content-Type", "text/html");
-      headers.set("Cache-Control", "no-cache");
-      return new Response(adminFile, {headers});
-    }
+  const response = await serveAsset(adminPath, env);
+  
+  if (response) {
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "no-cache");
+    return new Response(response.body, { headers });
   }
 
   return new Response("Admin interface not found", {status: 404});
@@ -94,8 +155,6 @@ async function handleAdmin(request, path, env) {
  * Handle API routes
  */
 async function handleAPI(request, path, env) {
-  const url = new URL(request.url);
-
   // Guestbook API
   if (path === "/api/guestbook") {
     if (request.method === "POST") {
@@ -112,7 +171,10 @@ async function handleAPI(request, path, env) {
     }
   }
 
-  return new Response("API endpoint not found", {status: 404});
+  return new Response(JSON.stringify({error: "API endpoint not found"}), {
+    status: 404,
+    headers: {"Content-Type": "application/json"}
+  });
 }
 
 /**
@@ -122,7 +184,6 @@ async function handleGuestbookPost(request, env) {
   try {
     const data = await request.json();
 
-    // Validate data
     if (!data.name || !data.message) {
       return new Response(JSON.stringify({error: "Name and message are required"}), {
         status: 400,
@@ -130,19 +191,20 @@ async function handleGuestbookPost(request, env) {
       });
     }
 
-    // Store in KV (if available)
-    if (env && env.GUESTBOOK) {
+    if (env.GUESTBOOK) {
       const id = Date.now().toString();
+      const now = new Date().toISOString();
       await env.GUESTBOOK.put(id, JSON.stringify({
         id,
         name: data.name,
         message: data.message,
-        timestamp: new Date().toISOString()
+        created_at: now, // Match Hugo template expectation
+        timestamp: now   // Keep for compatibility
       }));
     }
 
-    return new Response(JSON.stringify({success: true, id: Date.now()}), {
-      status: 200,
+    return new Response(JSON.stringify({success: true}), {
+      status: 201,
       headers: {"Content-Type": "application/json"}
     });
   } catch (error) {
@@ -157,19 +219,19 @@ async function handleGuestbookPost(request, env) {
  * Handle guestbook GET
  */
 async function handleGuestbookGet(request, env) {
-  if (env && env.GUESTBOOK) {
-    const keys = await env.GUESTBOOK.list();
+  if (env.GUESTBOOK) {
+    const list = await env.GUESTBOOK.list({limit: 100});
     const entries = [];
 
-    for (const key of keys.keys) {
+    for (const key of list.keys) {
       const value = await env.GUESTBOOK.get(key.name);
       if (value) {
         entries.push(JSON.parse(value));
       }
     }
 
-    // Sort by timestamp
-    entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    // Sort by date descending
+    entries.sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
 
     return new Response(JSON.stringify(entries), {
       status: 200,
@@ -190,7 +252,6 @@ async function handleContactPost(request, env) {
   try {
     const data = await request.json();
 
-    // Validate data
     if (!data.name || !data.email || !data.message) {
       return new Response(JSON.stringify({error: "Name, email, and message are required"}), {
         status: 400,
@@ -198,14 +259,11 @@ async function handleContactPost(request, env) {
       });
     }
 
-    // Store in KV (if available)
-    if (env && env.CONTACT) {
+    if (env.CONTACT) {
       const id = Date.now().toString();
       await env.CONTACT.put(id, JSON.stringify({
         id,
-        name: data.name,
-        email: data.email,
-        message: data.message,
+        ...data,
         timestamp: new Date().toISOString()
       }));
     }
@@ -223,16 +281,6 @@ async function handleContactPost(request, env) {
 }
 
 /**
- * Handle content requests
- */
-async function handleContent(request, path, env) {
-  // For now, serve the main index.html for all content routes
-  // In a full implementation, you'd serve the appropriate HTML file
-  // based on the Hugo build output
-  return handleAsset(request, "/index.html", env);
-}
-
-/**
  * Get content type based on file extension
  */
 function getContentType(ext) {
@@ -240,16 +288,22 @@ function getContentType(ext) {
     "css": "text/css",
     "js": "application/javascript",
     "html": "text/html",
+    "xml": "application/xml",
+    "json": "application/json",
     "png": "image/png",
     "jpg": "image/jpeg",
     "jpeg": "image/jpeg",
     "gif": "image/gif",
     "svg": "image/svg+xml",
+    "webp": "image/webp",
+    "avif": "image/avif",
     "ico": "image/x-icon",
     "woff": "font/woff",
     "woff2": "font/woff2",
     "ttf": "font/ttf",
-    "eot": "application/vnd.ms-fontobject"
+    "eot": "application/vnd.ms-fontobject",
+    "txt": "text/plain",
+    "flac": "audio/flac"
   };
 
   return types[ext.toLowerCase()] || null;

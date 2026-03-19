@@ -28,34 +28,27 @@ module.exports = merge(common, {
     splitChunks: {
       chunks: "all",
       cacheGroups: {
-        // Separate chunk for Decap CMS core
-        decapCms: {
-          test: /[\\/]node_modules[\\/]decap-cms-app[\\/]/,
-          name: "decap-cms",
+        // Isolate Decap CMS and its heavy dependencies (Slate, Redux, etc.)
+        cmsVendor: {
+          test: /[\\/]node_modules[\\/](decap-cms-app|slate|slate-react|redux|react-redux|immutable|lodash|moment)/,
+          name: "cms-vendor",
+          chunks: "all",
+          priority: 30,
+          enforce: true,
+        },
+        // Separate chunk for React core (shared)
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+          name: "react-vendor",
           chunks: "all",
           priority: 20,
         },
-        // Separate chunk for React and related libraries
-        react: {
-          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-          name: "react-vendor",
-          chunks: "all",
-          priority: 15,
-        },
-        // Separate chunk for other vendor libraries
+        // Other general vendor libraries
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
           chunks: "all",
           priority: 10,
-          reuseExistingChunk: true,
-        },
-        // Separate chunk for preview templates
-        previewTemplates: {
-          test: /[\\/]src[\\/]js[\\/]cms-preview-templates[\\/]/,
-          name: "preview-templates",
-          chunks: "all",
-          priority: 5,
           reuseExistingChunk: true,
         },
       },

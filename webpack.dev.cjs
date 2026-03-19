@@ -12,7 +12,7 @@ module.exports = merge(common, {
   },
 
   devServer: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3001,
     static: {
       directory: path.join(process.cwd(), "./dist"),
     },

@@ -28,7 +28,7 @@
 
     const fetchComments = async () => {
       try {
-        const response = await fetch("/.netlify/functions/guestbook");
+        const response = await fetch("/api/guestbook");
         if (!response.ok) {
           commentsList.innerHTML = "<p>Could not load comments.</p>";
           return;
@@ -39,7 +39,7 @@
         } else {
           commentsList.innerHTML = comments.map(comment => `
             <div class="mb3 pb2 bb b--moon-gray">
-              <p class="b ma0">${comment.name} <span class="fw4 gray f6">on ${new Date(comment.created_at).toLocaleDateString()}</span></p>
+              <p class="b ma0">${comment.name} <span class="fw4 gray f6">on ${new Date(comment.created_at || comment.timestamp).toLocaleDateString()}</span></p>
               <p class="ma0">${comment.message}</p>
             </div>
           `).join("");
@@ -59,13 +59,13 @@
       const message = document.getElementById("comment-message").value;
 
       try {
-        const response = await fetch("/.netlify/functions/guestbook", {
+        const response = await fetch("/api/guestbook", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, message }),
         });
 
-        if (response.status === 201) {
+        if (response.ok) {
           commentStatus.textContent = "Thanks for your comment!";
           commentStatus.className = "mt2 green";
           commentForm.reset();

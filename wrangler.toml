@@ -3,11 +3,15 @@
 name = "kinland-web"
 main = "dist/worker.js"
 compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 # Environment variables
 [vars]
-SITE_URL = "https://kinland.com"
-ADMIN_EMAIL = "admin@kinland.com"
+SITE_URL = "https://kinland.helltop.net"
+ADMIN_EMAIL = "admin@kinland.helltop.net"
+CONTACT_EMAIL = "contact@kinland.helltop.net"
+GUESTBOOK_ENABLED = "true"
+ENABLE_EMAILS = "false"  # Set to true when using Cloudflare Email Sending
 
 # KV namespaces for data storage
 [[kv_namespaces]]
@@ -22,7 +26,7 @@ id = "04faf3145a574cb19a06fa642ddefd1f"
 binding = "CONTACT"
 id = "70db53ee557e4ff3bdc7441eeebad596"
 
-# D1 database (if using)
+# D1 database (optional - for more robust data storage)
 [[d1_databases]]
 binding = "DB"
 database_name = "kinland-db"
@@ -30,8 +34,7 @@ database_id = "a5bc26ea-5977-4ab8-8cfe-69386d10a251"
 
 # Routes for the worker
 routes = [
-  { pattern = "kinland.com/*", zone_id = "your-zone-id" },
-  { pattern = "www.kinland.com/*", zone_id = "your-zone-id" }
+  { pattern = "kinland.helltop.net/*", zone_id = "your-zone-id" }
 ]
 
 # Build configuration
@@ -39,6 +42,14 @@ routes = [
 command = "npm run build:worker"
 watch_dir = "src"
 
+# Development settings
+[dev]
+ip = "127.0.0.1"
+port = 8787
+local_protocol = "http"
+upstream_protocol = "https"
+
+# Observability settings
 [observability]
 enabled = true
 head_sampling_rate = 1
@@ -48,3 +59,11 @@ enabled = true
 head_sampling_rate = 1
 persist = true
 invocation_logs = true
+
+# Site configuration for static assets
+[site]
+bucket = "./dist"
+
+# Triggers for scheduled tasks (optional)
+[triggers]
+crons = ["0 0 * * *"]  # Daily cleanup at midnight UTC

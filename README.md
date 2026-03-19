@@ -58,119 +58,28 @@ npm run build:worker
 ### Deployment
 
 ```bash
-# Deploy to Cloudflare Pages
-npm run deploy:pages
+# Build and deploy to Cloudflare Workers
+npm run deploy:cloudflare
 ```
 
 ## Configuration
 
-### Environment Variables
+### Cloudflare Workers Configuration
 
-Set these in your Cloudflare Pages dashboard:
-
-```env
-NODE_VERSION=22
-NPM_VERSION=10.9.0
-YARN_VERSION=1.22.22
-HUGO_VERSION=0.156.2
-HUGO_ENV=production
-HUGO_ENABLEGITINFO=true
-```
-
-### Build Settings
-
-- **Build command**: `npm run build:all`
-- **Publish directory**: `dist`
-- **Framework preset**: None (Custom)
-
-## API Endpoints
-
-### Guestbook
-
-- `GET /api/guestbook` - Get all guestbook entries
-- `POST /api/guestbook` - Add new guestbook entry
-
-### Contact
-
-- `POST /api/contact` - Submit contact form
-
-## Admin Interface
-
-Access the Decap CMS admin interface at:
-
-```
-https://your-site.pages.dev/admin/
-```
-
-## File Structure
-
-```
-├── src/
-│   ├── worker.js          # Main worker entry point
-│   ├── index.js           # React app entry
-│   ├── css/               # Styles
-│   └── js/                # JavaScript modules
-├── site/                  # Hugo source
-├── dist/                  # Built assets
-├── cloudflare.toml        # Cloudflare Pages config
-├── _redirects             # URL routing rules
-├── _headers               # HTTP headers
-├── wrangler.toml          # Cloudflare Workers config
-├── cloudflare.config.js   # Vite config for worker
-└── package.json
-```
-
-## Migration from Netlify
-
-This version converts the original Netlify-based site to Cloudflare Pages:
-
-- Static assets are served from the `dist` directory
-- API endpoints use Cloudflare Workers
-- Admin interface is preserved
-- Build process updated for Pages
-- Environment variables moved to Cloudflare dashboard
-
-## Cloudflare Pages Configuration
-
-### Build Configuration
-
-The `cloudflare.toml` file contains the build configuration:
-
-```toml
-[build]
-  command = "npm run build:all"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "22"
-  NPM_VERSION = "10.9.0"
-  YARN_VERSION = "1.22.22"
-```
+The `wrangler.toml` file contains the worker configuration. Ensure your KV namespaces and D1 database are correctly bound.
 
 ### URL Routing
 
-The `_redirects` file handles client-side routing:
-
-```
-# Redirect admin to Decap CMS
-/admin/* /admin/index.html 200
-
-# Handle client-side routing for SPA
-/* /index.html 200
-```
+The Worker in `src/worker.js` handles all routing, including:
+- Serving Hugo-generated HTML files
+- Resolving clean URLs (e.g. `/post/my-post/` -> `/post/my-post/index.html`)
+- Serving static assets from KV storage
+- Handling `/api/*` routes for Guestbook and Contact forms
+- Providing the `/admin/` interface for Decap CMS
 
 ### Security Headers
 
-The `_headers` file sets security headers:
-
-```
-# Security headers
-/*
-  X-Frame-Options: DENY
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-XSS-Protection: 1; mode=block
-```
+Security headers and Cache-Control are managed within `src/worker.js` in the `createAssetResponse` function.
 
 ## Support
 

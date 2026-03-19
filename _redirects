@@ -1,5 +1,22 @@
-# Redirect admin to Decap CMS
-/admin/* /admin/index.html 200
+# Cloudflare Pages redirects for Hugo site
 
-# Handle client-side routing for SPA
+# Redirect www to non-www
+www.kinland.com/* https://kinland.com/:splat 301
+
+# Redirect old paths to new ones (if needed)
+# /old-page https://kinland.com/new-page 301
+
+# Handle trailing slashes consistently
 /* /index.html 200
+
+# API routes (if any)
+/api/* https://api.kinland.com/:splat 200
+
+# Contact form handling
+/contact https://kinland.com/contact 200
+
+# Guestbook handling
+/guestbook https://kinland.com/guestbook 200
+
+# Fallback to 404
+/* /404.html 404

@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "https://kinland.helltop.net/"
 languageCode = "en-us"
 languageLang = "en"
 title = "Homepage"
@@ -10,3 +10,47 @@ disableKinds = []
 
 # Cloudflare Pages specific settings
 publishDir = "public"
+
+# Performance and optimization settings for Cloudflare
+enableGitInfo = true
+enableRobotsTXT = true
+enableSitemap = true
+
+# Minification settings
+minify = true
+
+# Image processing settings
+# Use Cloudflare Images for better performance
+enableImageProcessing = true
+
+# Security headers
+enableHugoBin = true
+
+# Build settings
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+# Output formats
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+
+# Media types
+[mediaTypes]
+  [mediaTypes."text/html"]
+    suffixes = ["html", "htm"]
+
+# Output formats
+[outputFormats]
+  [outputFormats.HTML]
+    mediaType = "text/html"
+    baseName = "index"
+    isPlainText = false
+    notAlternative = true
+  [outputFormats.RSS]
+    mediaType = "application/rss+xml"
+    baseName = "index"
+    isPlainText = false
+    notAlternative = true
