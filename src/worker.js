@@ -268,6 +268,11 @@ async function handleContactPost(request, env) {
       }));
     }
 
+    // Send email via Mailgun if enabled
+    if (env.ENABLE_EMAILS === "true") {
+      ctx.waitUntil(sendContactEmail(data, env));
+    }
+
     return new Response(JSON.stringify({success: true}), {
       status: 200,
       headers: {"Content-Type": "application/json"}
@@ -278,6 +283,71 @@ async function handleContactPost(request, env) {
       headers: {"Content-Type": "application/json"}
     });
   }
+}
+
+/**
+ * Send contact form email via Mailgun
+ */
+async function sendContactEmail(data, env) {
+  try {
+    // Load template
+    const templateResponse = await serveAsset("/emails/contact/index.html", env);
+    if (!templateResponse) {
+      console.error("Contact email template not found");
+      return;
+    }
+
+    let html = await templateResponse.text();
+
+    // Simple template replacement
+    html = html.replace(/{{name}}/g, data.name)
+               .replace(/{{email}}/g, data.email)
+               .replace(/{{message}}/g, data.message);
+
+    await sendMailgunEmail({
+      to: env.CONTACT_EMAIL,
+      from: `Kinland Contact Form <noreply@${env.MAILGUN_DOMAIN}>`,
+      subject: `New Contact Form Submission from ${data.name}`,
+      html: html
+    }, env);
+  } catch (error) {
+    console.error("Failed to send contact email:", error);
+  }
+}
+
+/**
+ * Send email via Mailgun REST API
+ */
+async function sendMailgunEmail({to, from, subject, text, html}, env) {
+  const { MAILGUN_API_KEY, MAILGUN_DOMAIN, MAILGUN_API_BASE_URL } = env;
+
+  if (!MAILGUN_API_KEY || !MAILGUN_DOMAIN) {
+    throw new Error("Mailgun configuration missing");
+  }
+
+  const formData = new FormData();
+  formData.append("from", from);
+  formData.append("to", to);
+  formData.append("subject", subject);
+  if (text) formData.append("text", text);
+  if (html) formData.append("html", html);
+
+  const auth = btoa(`api:${MAILGUN_API_KEY}`);
+  
+  const response = await fetch(`${MAILGUN_API_BASE_URL}/${MAILGUN_DOMAIN}/messages`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Basic ${auth}`
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Mailgun API error: ${response.status} ${errorText}`);
+  }
+
+  return await response.json();
 }
 
 /**

@@ -45,6 +45,10 @@ export default defineConfig({
         {
           src: 'dist-hugo/*',
           dest: './'
+        },
+        {
+          src: 'emails/*',
+          dest: 'emails'
         }
       ]
     })
