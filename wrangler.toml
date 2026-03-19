@@ -39,7 +39,7 @@ routes = [
 
 # Build configuration
 [build]
-command = "npm run build:worker"
+command = "yarn run build:worker"
 watch_dir = "src"
 
 # Development settings

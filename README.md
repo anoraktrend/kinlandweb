@@ -29,37 +29,37 @@ The site is built using:
 ### Installation
 
 ```bash
-npm install
+yarn install
 ```
 
 ### Development
 
 ```bash
 # Start Hugo development server
-npm run start:hugo
+yarn run start:hugo
 
 # Start webpack development server
-npm run start:webpack
+yarn run start:webpack
 
 # Start Cloudflare Worker development
-npm run start:worker
+yarn run start:worker
 ```
 
 ### Building
 
 ```bash
 # Build static site and worker
-npm run build:all
+yarn run build:all
 
 # Build only the worker
-npm run build:worker
+yarn run build:worker
 ```
 
 ### Deployment
 
 ```bash
 # Build and deploy to Cloudflare Workers
-npm run deploy:cloudflare
+yarn run deploy:cloudflare
 ```
 
 ## Configuration
