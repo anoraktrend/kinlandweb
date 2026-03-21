@@ -28,7 +28,7 @@
 
     const fetchComments = async () => {
       try {
-        const response = await fetch("/api/guestbook");
+        const response = await fetch("/api/guestbook?slug={{ .File.ContentBaseName }}");
         if (!response.ok) {
           commentsList.innerHTML = "<p>Could not load comments.</p>";
           return;
@@ -62,7 +62,7 @@
         const response = await fetch("/api/guestbook", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, message }),
+          body: JSON.stringify({ name, message, slug: "{{ .File.ContentBaseName }}" }),
         });
 
         if (response.ok) {

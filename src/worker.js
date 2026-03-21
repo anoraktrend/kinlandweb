@@ -194,10 +194,14 @@ async function handleGuestbookPost(request, env) {
     if (env.GUESTBOOK) {
       const id = Date.now().toString();
       const now = new Date().toISOString();
-      await env.GUESTBOOK.put(id, JSON.stringify({
+      const slug = data.slug || "global";
+      const key = `comment:${slug}:${id}`;
+      
+      await env.GUESTBOOK.put(key, JSON.stringify({
         id,
         name: data.name,
         message: data.message,
+        slug,
         created_at: now, // Match Hugo template expectation
         timestamp: now   // Keep for compatibility
       }));
@@ -220,7 +224,15 @@ async function handleGuestbookPost(request, env) {
  */
 async function handleGuestbookGet(request, env) {
   if (env.GUESTBOOK) {
-    const list = await env.GUESTBOOK.list({limit: 100});
+    const url = new URL(request.url);
+    const slug = url.searchParams.get("slug");
+    
+    let listOptions = {limit: 100};
+    if (slug) {
+      listOptions.prefix = `comment:${slug}:`;
+    }
+
+    const list = await env.GUESTBOOK.list(listOptions);
     const entries = [];
 
     for (const key of list.keys) {
