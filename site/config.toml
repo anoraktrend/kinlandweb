@@ -17,7 +17,13 @@ enableRobotsTXT = true
 enableSitemap = true
 
 # Minification settings
-minify = true
+[minify]
+  minifyOutput = true
+
+# Security settings for environment variables
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^CI$', '^CONTEXT$', '^URL$', '^DEPLOY_PRIME_URL$']
 
 # Image processing settings
 # Use Cloudflare Images for better performance
@@ -33,9 +39,14 @@ buildExpired = false
 
 # Output formats
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS"]
   page = ["HTML"]
   section = ["HTML", "RSS"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
 
 # Media types
 [mediaTypes]
