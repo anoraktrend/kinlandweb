@@ -99,7 +99,7 @@
     "@netlify/neon": "^0.1.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
-    "decap-cms-app": "^3.10.1",
+    "decap-cms-app": "^3.11.0",
     "drizzle-orm": "^0.45.1",
     "postcss": "^8.5.8",
     "redux": "^5.0.1",
