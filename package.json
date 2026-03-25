@@ -47,7 +47,6 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@babel/eslint-parser": "^7.28.6",
-    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.28.5",

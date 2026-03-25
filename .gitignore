@@ -8,7 +8,7 @@ yarn-error.log
 .env
 .env.*
 .DS_Store
-
+.yarn/
 .gemini/
 gha-creds-*.json
 
