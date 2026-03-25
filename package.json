@@ -54,7 +54,7 @@
     "@babel/register": "^7.28.6",
     "@eslint/js": "9.39.4",
     "@netlify/plugin-emails": "^1.1.1",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "assets-webpack-plugin": "^7.1.1",
     "babel-loader": "^10.1.1",
     "clean-webpack-plugin": "^4.0.0",
