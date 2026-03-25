@@ -21909,7 +21909,7 @@ __metadata:
     tslib: "npm:2"
     url-loader: "npm:^4.1.1"
     vite: "npm:^6.3.0"
-    vite-plugin-static-copy: "npm:^3.3.0"
+    vite-plugin-static-copy: "npm:^4.0.0"
     webpack: "npm:^5.105.4"
     webpack-cli: "npm:^7.0.1"
     webpack-dev-server: "npm:^5.2.3"
@@ -21918,17 +21918,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"vite-plugin-static-copy@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "vite-plugin-static-copy@npm:3.3.0"
+"vite-plugin-static-copy@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "vite-plugin-static-copy@npm:4.0.0"
   dependencies:
     chokidar: "npm:^3.6.0"
     p-map: "npm:^7.0.4"
     picocolors: "npm:^1.1.1"
     tinyglobby: "npm:^0.2.15"
   peerDependencies:
-    vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
-  checksum: 10c0/c70d48a1edfada3d1d90f13311a5ab7e67ea0decdf6b5758a6ba8b10db4e64e8e3573f43b7fe56024eff783ce945fe290ee7b96872f9df1ca0059458dd85713b
+    vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: 10c0/05b42b6f942e81b838f828c596fc6d00f72c0b5e1c4d68df13aaa4405c96d71333a082cc1bba96d0153134191addff8b2fe9134ed2e725b3b808e3b8470497c8
   languageName: node
   linkType: hard
 
