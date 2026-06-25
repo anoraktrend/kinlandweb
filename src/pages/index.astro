@@ -13,11 +13,11 @@ import type { InferEntrySchema } from "astro:content";
 const posts = await getCollection("post");
 const sortedPosts = posts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .map((p) => ({ slug: p.slug, ...p.data }));
+  .map((p) => ({ slug: p.id, ...p.data }));
 ---
 
 <BaseLayout title="Homepage" isHome={true}>
-  <Nav slot="nav" />
+  <Nav slot="nav" hero />
   <main slot="main">
     <Jumbotron imageUrl="/img/home-jumbotron.jpg" title="Welcome to Kinland!" subtitle="A small island nation I call home" />
     <ShortText heading="Who are we?" text="We're proud fisherman, chefs, and artists who all live on an island." />

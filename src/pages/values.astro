@@ -8,12 +8,12 @@ import MediaBlockReverse from "../components/MediaBlockReverse.astro";
 import { getCollection } from "astro:content";
 
 const pages = await getCollection("page");
-const valuesPage = pages.find((p) => p.slug === "values");
+const valuesPage = pages.find((p) => p.id === "values");
 const data = valuesPage?.data;
 ---
 
 <BaseLayout title={data?.title || "Values"}>
-  <Nav slot="nav" />
+  <Nav slot="nav" hero />
   <main slot="main">
     <Jumbotron imageUrl={data?.image || "/img/home-jumbotron.jpg"} title={data?.title || "Values"} />
     <div class="mw7 center ph3 pt4">

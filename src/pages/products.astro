@@ -10,12 +10,12 @@ import Table from "../components/Table.astro";
 import { getCollection } from "astro:content";
 
 const pages = await getCollection("page");
-const productsPage = pages.find((p) => p.slug === "products");
+const productsPage = pages.find((p) => p.id === "products");
 const data = productsPage?.data;
 ---
 
 <BaseLayout title={data?.title || "My Art"}>
-  <Nav slot="nav" />
+  <Nav slot="nav" hero />
   <main slot="main">
     <Jumbotron imageUrl={data?.image || "/img/products-jumbotron.jpg"} title={data?.title || "My Art"} />
     {data?.intro && (

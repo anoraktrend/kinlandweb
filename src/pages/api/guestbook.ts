@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+export const GET: APIRoute = async ({ request }) => {
   if (!env?.GUESTBOOK) {
     return new Response(JSON.stringify([]), {
       status: 200,
@@ -32,8 +32,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   });
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
     if (!data.name || !data.message) {

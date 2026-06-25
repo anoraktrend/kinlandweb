@@ -15,14 +15,14 @@ const pagePosts = sortedPosts.slice((currentPage - 1) * pageSize, currentPage * 
 ---
 
 <BaseLayout title="Latest stories">
-  <Nav slot="nav" />
+  <Nav slot="nav" hero />
   <main slot="main">
     <Jumbotron imageUrl="/img/blog-index.jpg" title="Latest stories" />
     <div class="mw7 center">
       <ul class="flex-ns flex-wrap mhn1-ns pa3">
         {pagePosts.map((post) => (
           <div class="w-50-ns ph1-ns flex">
-            <a href={`/post/${post.slug}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
+            <a href={`/post/${post.id}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
               <h2 class="f3 b lh-title mb1 primary">{post.data.title}</h2>
               <p class="mid-gray lh-title mb2">{new Date(post.data.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
               <p class="mb0">{post.data.description}</p>
