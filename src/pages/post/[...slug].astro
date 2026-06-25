@@ -31,10 +31,10 @@ const { Content, data } = post;
             year: "numeric",
           })}
         </p>
+        {data?.description && <p>{data?.description}</p>}
         {data?.image && (
           <img src={data.image} alt={data.title} class="w-100 mb3 br1" />
         )}
-        {data?.description && <p>{data?.description}</p>}
         {Content && <Content />}
       </article>
       <Comments slug={slugString} />
