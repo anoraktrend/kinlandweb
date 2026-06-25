@@ -1,7 +1,13 @@
 import { defineConfig } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
-import tina from "@tinacms/astro/integration";
-import { tinaAdminDevRedirect } from "@tinacms/astro/vite";
+
+const isDev = process.env.NODE_ENV !== "production";
+
+let tinaIntegration, tinaAdminDevRedirect;
+if (isDev) {
+  tinaIntegration = (await import("@tinacms/astro/integration")).default;
+  tinaAdminDevRedirect = (await import("@tinacms/astro/vite")).tinaAdminDevRedirect;
+}
 
 export default defineConfig({
   site: "https://kinland.helltop.net",
@@ -9,19 +15,11 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "passthrough",
   }),
-  integrations: [tina()],
+  integrations: isDev ? [tinaIntegration()] : [],
   vite: {
-    plugins: [tinaAdminDevRedirect()],
+    plugins: isDev ? [tinaAdminDevRedirect()] : [],
     ssr: {
       noExternal: ["@tinacms/astro", "@tinacms/bridge"],
-    },
-    build: {
-      rollupOptions: {
-        external: ["@napi-rs/wasm-runtime", "satteri"],
-      },
-      rolldownOptions: {
-        external: ["@napi-rs/wasm-runtime", "satteri"],
-      },
     },
   },
 });
