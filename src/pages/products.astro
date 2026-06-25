@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Jumbotron from "../components/Jumbotron.astro";
+import FourUp from "../components/FourUp.astro";
+import ImageGrid from "../components/ImageGrid.astro";
+import Blockquote from "../components/Blockquote.astro";
+import Table from "../components/Table.astro";
+import { getCollection } from "astro:content";
+
+const pages = await getCollection("page");
+const productsPage = pages.find((p) => p.slug === "products");
+const data = productsPage?.data;
+---
+
+<BaseLayout title={data?.title || "My Art"}>
+  <Nav slot="nav" />
+  <main slot="main">
+    <Jumbotron imageUrl={data?.image || "/img/products-jumbotron.jpg"} title={data?.title || "My Art"} />
+    {data?.intro && (
+      <FourUp
+        heading={data.intro.heading}
+        description={data.intro.description || ""}
+        blurbs={data.intro.blurbs || []}
+      />
+    )}
+    {data?.main && (
+      <>
+        <div class="mw7 center">
+          <div class="mw6 ph3 mb3">
+            <h3 class="f3 b lh-title mb2">{data.main.heading}</h3>
+            <p>{data.main.description}</p>
+          </div>
+        </div>
+        <ImageGrid image1={data.main.image1} image2={data.main.image2} image3={data.main.image3} />
+      </>
+    )}
+    <div class="pb4">
+      {(data?.testimonials || []).map((t: any) => (
+        <Blockquote quote={t.quote} author={t.author} />
+      ))}
+    </div>
+    {data?.full_image && <img src={data.full_image} alt="" class="db w-100" />}
+    {data?.pricing && (
+      <Table
+        heading={data.pricing.heading}
+        description={data.pricing.description}
+        plans={data.pricing.plans}
+      />
+    )}
+  </main>
+  <Footer slot="footer" />
+</BaseLayout>

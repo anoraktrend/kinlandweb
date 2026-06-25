@@ -1,0 +1,31 @@
+---
+export interface Product {
+  image: string;
+  text: string;
+}
+export interface Props {
+  intro: { heading: string; text: string };
+  products?: Product[];
+}
+const { intro, products = [] } = Astro.props;
+---
+
+<div class="bg-off-white pv4">
+  <div class="ph3 mw7 center">
+    <h2 class="f2 b lh-title mb2">{intro.heading}</h2>
+    <p class="mb4 mw6">{intro.text}</p>
+    {products.length > 0 && (
+      <div class="flex-ns mhn2-ns mb3">
+        {products.map((product) => (
+          <div class="ph2-ns w-50-ns">
+            <img src={product.image} alt="" class="center db mb3" style="width: 240px" />
+            <p>{product.text}</p>
+          </div>
+        ))}
+      </div>
+    )}
+    <div class="tc">
+      <a href="/products" class="btn raise">See all products</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { getCollection } from "astro:content";
+
+const pages = await getCollection("page");
+const contactPage = pages.find((p) => p.slug === "contact");
+const data = contactPage?.data;
+---
+
+<BaseLayout title={data?.title || "Contact"}>
+  <Nav slot="nav" />
+  <main slot="main">
+    <div class="ph3 bg-off-white">
+      <div class="center mw6 pv3">
+        {data?.logo && <img src={data.logo} alt="" class="db w4 center pv4" />}
+        <div set:html={contactPage?.body}></div>
+        <div class="flex-ns mb3">
+          {(data?.contact_entries || []).map((entry: any) => (
+            <div>
+              <h4 class="f4 b lh-title mb2 primary">{entry.heading}</h4>
+              <p>{entry.text}</p>
+            </div>
+          ))}
+        </div>
+        <ContactForm />
+      </div>
+    </div>
+  </main>
+  <Footer slot="footer" />
+</BaseLayout>

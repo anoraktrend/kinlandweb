@@ -1,6 +1,8 @@
 node_modules/
 dist/
 dist-hugo/
+.astro/
+.wrangler/
 site/data/webpack.json
 /npm-debug.log*
 yarn-error.log

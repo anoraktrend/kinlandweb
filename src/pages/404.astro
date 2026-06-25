@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="404 - Not Found">
+  <Nav slot="nav" />
+  <main slot="main">
+    <h1>Nothing Here...</h1>
+    <h3><a href="/">Go Home</a></h3>
+  </main>
+  <Footer slot="footer" />
+</BaseLayout>

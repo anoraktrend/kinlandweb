@@ -1,0 +1,35 @@
+---
+export interface Post {
+  slug: string;
+  title: string;
+  date: Date;
+  description?: string;
+}
+export interface Props {
+  posts: Post[];
+}
+const { posts } = Astro.props;
+---
+
+<div class="bg-off-white pv4">
+  <div class="ph3 mw7 center">
+    <h2 class="f2 b lh-title mb3">Latest stories</h2>
+    <div class="w-100 flex-ns mhn1-ns flex-wrap mb3">
+      {posts.slice(0, 4).map((post) => (
+        <div class="ph1-ns w-50-ns flex">
+          <a href={`/post/${post.slug}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
+            <h2 class="f3 b lh-title mb1 primary">{post.title}</h2>
+            <p class="mid-gray lh-title mb2">{new Date(post.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            <p class="mb0">{post.description}</p>
+            <p class="link b dib black mb0">Read more →</p>
+          </a>
+        </div>
+      ))}
+    </div>
+    {posts.length > 4 && (
+      <div class="tc">
+        <a href="/post" class="btn raise">Read more</a>
+      </div>
+    )}
+  </div>
+</div>

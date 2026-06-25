@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Jumbotron from "../components/Jumbotron.astro";
+import ShortText from "../components/ShortText.astro";
+import TwoUp from "../components/TwoUp.astro";
+import TextAndImage from "../components/TextAndImage.astro";
+import Blog from "../components/Blog.astro";
+import { getCollection } from "astro:content";
+import type { InferEntrySchema } from "astro:content";
+
+const posts = await getCollection("post");
+const sortedPosts = posts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map((p) => ({ slug: p.slug, ...p.data }));
+---
+
+<BaseLayout title="Homepage" isHome={true}>
+  <Nav slot="nav" />
+  <main slot="main">
+    <Jumbotron imageUrl="/img/home-jumbotron.jpg" title="Welcome to Kinland!" subtitle="A small island nation I call home" />
+    <ShortText heading="Who are we?" text="We're proud fisherman, chefs, and artists who all live on an island." />
+    <div class="bg-off-white pv4">
+      <div class="ph3 mw7 center">
+        <h2 class="f2 b lh-title mb2">Where are we?</h2>
+        <p class="mb4 mw6">In the North Sea between Norway, Sweden, and Denmark!</p>
+      </div>
+    </div>
+    <TextAndImage heading="Why this website?" text="The majority of the residents here are really technically challenged, so I deigned to make a website for my homeland myself," buttonText="Read more" buttonLink="/values" />
+    <Blog posts={sortedPosts} />
+  </main>
+  <Footer slot="footer" />
+</BaseLayout>
