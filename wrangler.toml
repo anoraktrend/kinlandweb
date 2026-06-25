@@ -37,7 +37,7 @@ routes = [
 
 # Build configuration
 [build]
-command = "yarn run build"
+command = "bun run build"
 watch_dir = "src"
 
 # Development settings
