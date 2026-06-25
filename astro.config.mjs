@@ -15,5 +15,13 @@ export default defineConfig({
     ssr: {
       noExternal: ["@tinacms/astro", "@tinacms/bridge"],
     },
+    build: {
+      rollupOptions: {
+        external: ["@napi-rs/wasm-runtime", "satteri"],
+      },
+      rolldownOptions: {
+        external: ["@napi-rs/wasm-runtime", "satteri"],
+      },
+    },
   },
 });
