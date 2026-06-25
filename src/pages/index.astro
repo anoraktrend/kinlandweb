@@ -13,7 +13,7 @@ import type { InferEntrySchema } from "astro:content";
 const posts = await getCollection("post");
 const sortedPosts = posts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .map((p) => ({ slug: p.id, ...p.data }));
+  .map((p) => ({ slug: p.id, id: p.id, ...p.data }));
 ---
 
 <BaseLayout title="Homepage" isHome={true}>

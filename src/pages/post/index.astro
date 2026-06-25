@@ -23,6 +23,9 @@ const pagePosts = sortedPosts.slice((currentPage - 1) * pageSize, currentPage * 
         {pagePosts.map((post) => (
           <div class="w-50-ns ph1-ns flex">
             <a href={`/post/${post.id}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
+              {post.data.image && (
+                <img src={post.data.image} alt={post.data.title} class="w-100 mb2 br1" />
+              )}
               <h2 class="f3 b lh-title mb1 primary">{post.data.title}</h2>
               <p class="mid-gray lh-title mb2">{new Date(post.data.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
               <p class="mb0">{post.data.description}</p>

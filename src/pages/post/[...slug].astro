@@ -22,7 +22,10 @@ const { Content, data } = post;
   <main slot="main">
     <div class="mw6 center ph3 pt6 pb4">
       <article>
-        <h1>{data?.title}</h1>
+        {data?.image && (
+          <img src={data.image} alt={data.title} class="w-100 mb3 br1" />
+        )}
+        <h1 class="f2 b lh-title mb2">{data?.title}</h1>
         <p class="mid-gray lh-title mb2">
           {new Date(data?.date).toLocaleDateString("en-US", {
             weekday: "short",
