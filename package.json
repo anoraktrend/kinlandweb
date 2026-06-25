@@ -9,9 +9,7 @@
     "preview": "astro preview",
     "build": "astro build",
     "lint": "eslint src",
-    "build:worker": "astro build",
-    "deploy:worker": "wrangler deploy",
-    "deploy:cloudflare": "yarn run build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy"
   },
   "author": "",
   "license": "MIT",
