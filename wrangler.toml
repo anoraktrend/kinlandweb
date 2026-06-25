@@ -23,6 +23,10 @@ id = "04faf3145a574cb19a06fa642ddefd1f"
 binding = "CONTACT"
 id = "70db53ee557e4ff3bdc7441eeebad596"
 
+[[kv_namespaces]]
+binding = "SESSION"
+id = "28e989a1f32c4e4c8fa0da898418e6b3"
+
 # D1 database (optional - for more robust data storage)
 [[d1_databases]]
 binding = "DB"
