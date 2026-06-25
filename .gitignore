@@ -14,5 +14,9 @@ yarn-error.log
 .gemini/
 gha-creds-*.json
 
+# TinaCMS
+tina/__generated__/
+public/admin/
+
 # Local Netlify folder
 .netlify

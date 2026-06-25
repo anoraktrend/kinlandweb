@@ -1,7 +1,6 @@
 # Cloudflare Workers configuration for Kinland website
 
 name = "kinland-web"
-main = "dist/_worker.js/index.js"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -29,16 +28,6 @@ id = "70db53ee557e4ff3bdc7441eeebad596"
 binding = "DB"
 database_name = "kinland-db"
 database_id = "a5bc26ea-5977-4ab8-8cfe-69386d10a251"
-
-# Routes for the worker
-routes = [
-  { pattern = "kinland.helltop.net/*", zone_id = "your-zone-id" }
-]
-
-# Build configuration
-[build]
-command = "bun run build"
-watch_dir = "src"
 
 # Development settings
 [dev]
