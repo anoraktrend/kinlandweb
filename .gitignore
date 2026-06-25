@@ -1,22 +1,12 @@
 node_modules/
 dist/
-dist-hugo/
 .astro/
 .wrangler/
-site/data/webpack.json
-/npm-debug.log*
-yarn-error.log
 *.log
 .env
 .env.*
 .DS_Store
-.yarn/
-.gemini/
 gha-creds-*.json
 
 # TinaCMS
-tina/__generated__/
 public/admin/
-
-# Local Netlify folder
-.netlify
