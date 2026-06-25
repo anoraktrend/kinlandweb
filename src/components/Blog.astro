@@ -17,7 +17,7 @@ const { posts } = Astro.props;
     <div class="w-100 flex-ns mhn1-ns flex-wrap mb3">
       {posts.slice(0, 4).map((post) => (
         <div class="ph1-ns w-50-ns flex">
-          <a href={`/post/${post.slug}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
+          <a href={`/post/${post.id}`} class="no-underline pa3 bg-grey-1 br1 mb2 db raise w-100">
             <h2 class="f3 b lh-title mb1 primary">{post.title}</h2>
             <p class="mid-gray lh-title mb2">{new Date(post.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
             <p class="mb0">{post.description}</p>

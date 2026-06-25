@@ -2,13 +2,14 @@
 export interface Props {
   link: string;
   svg: string;
+  label: string;
 }
-const { link, svg } = Astro.props;
+const { link, svg, label } = Astro.props;
 ---
 
 <li class="dib ph2 raise">
-  <a href={link} class="link bg-white black db relative br-100 pa2">
-    <svg width="16px" height="16px" class="db">
+  <a href={link} class="link bg-white black db relative br-100 pa2" aria-label={label}>
+    <svg width="16px" height="16px" class="db" aria-hidden="true">
       <use xlink:href={`#${svg}`}></use>
     </svg>
   </a>

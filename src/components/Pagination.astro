@@ -10,13 +10,13 @@ const { currentPage, totalPages, basePath } = Astro.props;
 {totalPages > 1 && (
   <nav class="cf pa3">
     {currentPage > 1 && (
-      <a class="fl dib link dim black f6 f5-ns b pa2" title="Previous Page" href={currentPage === 2 ? basePath : `${basePath}/page/${currentPage - 1}`}>
+      <a class="fl dib link dim black f6 f5-ns b pa2" title="Previous Page" href={currentPage === 2 ? basePath : `${basePath}?page=${currentPage - 1}`}>
         &larr; Previous
       </a>
     )}
     <div class="pagination">
       {currentPage < totalPages && (
-        <a class="fl dib link dim black f6 f5-ns b pa2" title="Next Page" href={`${basePath}/page/${currentPage + 1}`}>
+        <a class="fl dib link dim black f6 f5-ns b pa2" title="Next Page" href={`${basePath}?page=${currentPage + 1}`}>
           Next &rarr;
         </a>
       )}

@@ -1,14 +1,21 @@
 ---
+import { Image } from "astro:assets";
+import logo from "../assets/images/logo.svg";
+
+export interface Props {
+  hero?: boolean;
+}
+const { hero = false } = Astro.props;
 ---
 
-<nav class="overflow-x-scroll overflow-x-visible-ns flex justify-between items-center center bg-white divider-grey relative">
-  <a href="/" class="pa3 db mr4 h-100 w3 flex-none">
-    <img src="/img/logo.svg" alt="Kaldi logo" class="br0 db mb0 w-100" />
+<nav class={`absolute top-0 left-0 right-0 z-999 flex justify-between items-center pa2 ${hero ? 'bg-black-50' : 'bg-black'}`}>
+  <a href="/" class="w3 h3">
+    <Image src={logo} alt="KIN logo" class="w-100 h-100" />
   </a>
-  <ul class="flex b grey-3">
-    <li><a href="/products" class="pa3 no-underline db">Products</a></li>
-    <li><a href="/values" class="pa3 no-underline db">Values</a></li>
-    <li><a href="/post" class="pa3 no-underline db">Blog</a></li>
-    <li><a href="/contact" class="pa3 no-underline db">Contact</a></li>
+  <ul class="flex b">
+    <li><a href="/products" class="pa2 no-underline db white">Products</a></li>
+    <li><a href="/values" class="pa2 no-underline db white">Values</a></li>
+    <li><a href="/post" class="pa2 no-underline db white">Blog</a></li>
+    <li><a href="/contact" class="pa2 no-underline db white">Contact</a></li>
   </ul>
 </nav>
