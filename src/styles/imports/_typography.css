@@ -1,9 +1,9 @@
 html {
   font-size: var(--font-size);
-  @media (--breakpoint-medium) {
+  @media screen and (min-width: 50em) {
     font-size: var(--font-size-m);
   }
-  @media (--breakpoint-large) {
+  @media screen and (min-width: 60em) {
     font-size: var(--font-size-l);
   }
   background-color: var(--black);
@@ -73,7 +73,7 @@ sup {
   text-overflow: ellipsis;
 }
 
-@media (--breakpoint-not-small) {
+@media screen and (min-width: 40em) {
   .measure-ns  {
     max-width: 30em;
   }
@@ -98,7 +98,7 @@ sup {
   }
 }
 
-@media (--breakpoint-medium) {
+@media screen and (min-width: 50em) {
   .measure-m {
     max-width: 30em;
   }
@@ -123,7 +123,7 @@ sup {
   }
 }
 
-@media (--breakpoint-large) {
+@media screen and (min-width: 60em) {
   .measure-l {
     max-width: 30em;
   }
