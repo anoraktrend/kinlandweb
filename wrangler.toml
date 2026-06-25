@@ -1,7 +1,7 @@
 # Cloudflare Workers configuration for Kinland website
 
 name = "kinland-web"
-main = "dist/worker.js"
+main = "dist/_worker.js/index.js"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -11,15 +11,11 @@ SITE_URL = "https://kinland.helltop.net"
 ADMIN_EMAIL = "admin@kinland.helltop.net"
 CONTACT_EMAIL = "contact@kinland.helltop.net"
 GUESTBOOK_ENABLED = "true"
-ENABLE_EMAILS = "true"  # Set to true when using Cloudflare Email Sending
+ENABLE_EMAILS = "true"
 MAILGUN_DOMAIN = "mail.helltop.net"
 MAILGUN_API_BASE_URL = "https://api.mailgun.net/v3"
 
 # KV namespaces for data storage
-[[kv_namespaces]]
-binding = "ASSETS"
-id = "fb02107173c64c75bba87491bb8e59fd"
-
 [[kv_namespaces]]
 binding = "GUESTBOOK"
 id = "04faf3145a574cb19a06fa642ddefd1f"
@@ -41,7 +37,7 @@ routes = [
 
 # Build configuration
 [build]
-command = "yarn run build:worker"
+command = "yarn run build"
 watch_dir = "src"
 
 # Development settings
@@ -62,10 +58,6 @@ head_sampling_rate = 1
 persist = true
 invocation_logs = true
 
-# Site configuration for static assets
-[site]
-bucket = "./dist"
-
 # Triggers for scheduled tasks (optional)
 [triggers]
-crons = ["0 0 * * *"]  # Daily cleanup at midnight UTC
+crons = ["0 0 * * *"]
