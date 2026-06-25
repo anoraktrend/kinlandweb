@@ -3,30 +3,37 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import Comments from "../../components/Comments.astro";
-import TinaIsland from "@tinacms/astro/TinaIsland.astro";
-import PostBody from "../../components/tina/PostBody.astro";
 import { getPost } from "../../lib/tina/data";
-import { islands } from "../../lib/tina/islands";
 
 export const prerender = false;
 
 const { slug } = Astro.params;
 const slugString = Array.isArray(slug) ? slug.join("/") : slug;
 
-const post = await getPost(`${slugString}.md`);
+const post = await getPost(slugString);
 if (!post) {
   return Astro.redirect("/post");
 }
-const data = post.data?.post;
+const { Content, data } = post;
 ---
 
 <BaseLayout title={data?.title || "Blog Post"}>
   <Nav slot="nav" />
   <main slot="main">
     <div class="mw6 center ph3 pt6 pb4">
-      <TinaIsland name="post" wrapper={islands.post.wrapper} params={{ slug: slugString }} primary>
-        <PostBody data={data} />
-      </TinaIsland>
+      <article>
+        <h1>{data?.title}</h1>
+        <p class="mid-gray lh-title mb2">
+          {new Date(data?.date).toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </p>
+        {data?.description && <p>{data?.description}</p>}
+        {Content && <Content />}
+      </article>
       <Comments slug={slugString} />
     </div>
   </main>

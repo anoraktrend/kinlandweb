@@ -1,8 +1,9 @@
-import { requestWithMetadata } from "@tinacms/astro/data";
-import client from "../../../tina/__generated__/client";
+import { getEntry, render } from "astro:content";
 
-export const getPost = (relativePath: string) =>
-  requestWithMetadata(
-    client.queries.post({ relativePath }),
-    { priority: "primary" }
-  );
+export const getPost = async (slug: string) => {
+  const entry = await getEntry("post", slug);
+  if (!entry) return null;
+
+  const { Content } = await render(entry);
+  return { ...entry, Content };
+};
